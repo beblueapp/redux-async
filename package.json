@@ -1,0 +1,59 @@
+{
+  "name": "@beblueapp/redux-async",
+  "version": "0.0.1",
+  "description": "Controls async dispatches on a standardized manner",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "babel src --out-dir dist --ignore '**/*.spec.js'",
+    "test": "jest --config=.jest/jest.config.js",
+    "lint": "run-p lint:*",
+    "lint:eslint": "eslint '**/*.js'",
+    "lint:flow": "flow check",
+    "prepublish": "yarn run build"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn run lint"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/beblueapp/redux-async.git"
+  },
+  "keywords": [
+    "redux",
+    "redux-thunk",
+    "async",
+    "promise",
+    "flow"
+  ],
+  "author": "Bruno Felipe Leal Delfino <bruno.delfino1995@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/beblueapp/redux-async/issues"
+  },
+  "homepage": "https://github.com/beblueapp/redux-async#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.4.4",
+    "@babel/core": "^7.4.4",
+    "@babel/preset-env": "^7.4.4",
+    "@babel/preset-flow": "^7.0.0",
+    "babel-eslint": "^10.0.1",
+    "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
+    "chai-like": "^1.1.1",
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-flowtype": "^3.8.1",
+    "eslint-plugin-import": "^2.17.2",
+    "eslint-plugin-node": "^9.0.1",
+    "eslint-plugin-promise": "^4.1.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "flow-bin": "^0.89.0",
+    "husky": "^2.2.0",
+    "jest": "^24.8.0",
+    "npm-run-all": "^4.1.5",
+    "sinon": "^7.3.2"
+  }
+}

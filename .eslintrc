@@ -1,0 +1,42 @@
+{
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "ecmaVersion": 6
+  },
+  "plugins": [
+    "flowtype"
+  ],
+  "extends": [
+    "airbnb-base",
+    "standard",
+    "plugin:flowtype/recommended"
+  ],
+  "env": {
+    "browser": true,
+    "node": true,
+    "es6": true
+  },
+  "overrides": [
+    {
+      "files": ["**/*.spec.js"],
+      "env": {
+        "jest": true
+      },
+      "globals": {
+        "sinon": true,
+        "jestExpect": true
+      },
+      "rules": {
+        "no-unused-expressions": 0,
+        "no-undefined": 0,
+        "max-nested-callbacks": [1, 4]
+      }
+    },
+    {
+      "files": ["**/.*/**"],
+      "rules": {
+        "import/no-extraneous-dependencies": 0
+      }
+    }
+  ]
+}
