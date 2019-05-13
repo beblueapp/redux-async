@@ -1,8 +1,6 @@
 # Redux Async
 
-> Controls async dispatches on a standardized manner
-
-## Motivation
+[![Build Status](https://travis-ci.org/beblueapp/redux-async.svg?branch=master)](https://travis-ci.org/beblueapp/redux-async)
 
 > There are only two hard things in Computer Science: cache invalidation and
 > naming things.

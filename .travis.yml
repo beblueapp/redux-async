@@ -1,0 +1,10 @@
+language: node_js
+node_js:
+  - "10"
+cache: yarn
+git:
+  quiet: true
+
+script:
+  - yarn run lint
+  - yarn run test
