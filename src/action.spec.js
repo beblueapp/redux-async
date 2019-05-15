@@ -1,9 +1,9 @@
-import asyncAction from './action'
+import createAC from './action'
 
-describe('asyncAction', () => {
+describe('createAC', () => {
   it('pipes the received parameters to given function', () => {
     const func = sinon.fake()
-    const action = asyncAction('NAME', func)
+    const action = createAC('NAME', func)
 
     action(1, 2, 3)(() => {})
 
@@ -12,7 +12,7 @@ describe('asyncAction', () => {
   })
 
   it('creates a function that returns a thunk', () => {
-    const action = asyncAction('NAME', () => {})
+    const action = createAC('NAME', () => {})
 
     const thunk = action()
 
@@ -21,7 +21,7 @@ describe('asyncAction', () => {
 
   it('calls func only when thunk runs', () => {
     const func = sinon.fake()
-    const action = asyncAction('NAME', func)
+    const action = createAC('NAME', func)
 
     const thunk = action()
 
@@ -35,7 +35,7 @@ describe('asyncAction', () => {
   describe('function wrapping whithin Promise', () => {
     it('returns a resolved promise with func results', () => {
       const func = () => 2
-      const action = asyncAction('NAME', func)
+      const action = createAC('NAME', func)
 
       const promise = action()(() => {})
 
@@ -45,7 +45,7 @@ describe('asyncAction', () => {
     it('returns a resolved promise indepently of func results', () => {
       const err = new Error('Something bad happened')
       const func = () => err
-      const action = asyncAction('NAME', func)
+      const action = createAC('NAME', func)
 
       const promise = action()(() => {})
 
@@ -55,7 +55,7 @@ describe('asyncAction', () => {
     it('returns a rejected promise if the function throws', () => {
       const msg = 'Something bad happened'
       const func = sinon.stub().throws('Unexpected', msg)
-      const action = asyncAction('NAME', func)
+      const action = createAC('NAME', func)
 
       const promise = action()(() => {})
 
@@ -64,7 +64,7 @@ describe('asyncAction', () => {
 
     it('doesn\'t delay func, execute it synchronously', () => {
       const func = sinon.fake()
-      const action = asyncAction('NAME', func)
+      const action = createAC('NAME', func)
 
       action()(() => {})
 
@@ -77,7 +77,7 @@ describe('asyncAction', () => {
     it('PENDING before calling function', () => {
       const func = sinon.fake()
       const dispatcher = sinon.fake()
-      const action = asyncAction('NAME', func)
+      const action = createAC('NAME', func)
 
       action()(dispatcher)
 
@@ -90,7 +90,7 @@ describe('asyncAction', () => {
       let outerResolve = () => {}
       const func = () => new Promise((resolve) => { outerResolve = resolve })
       const dispatcher = sinon.fake()
-      const action = asyncAction('NAME', func)
+      const action = createAC('NAME', func)
 
       const result = action()(dispatcher)
       outerResolve(1)
@@ -105,7 +105,7 @@ describe('asyncAction', () => {
       let outerReject = () => {}
       const func = sinon.fake(() => new Promise((resolve, reject) => { outerReject = reject }))
       const dispatcher = sinon.fake()
-      const action = asyncAction('NAME', func)
+      const action = createAC('NAME', func)
 
       const result = action()(dispatcher)
       outerReject(1)
@@ -121,7 +121,7 @@ describe('asyncAction', () => {
     it('has the name as given on dispatches', () => {
       const func = () => Promise.resolve({})
       const dispatcher = sinon.fake()
-      const action = asyncAction('NAME', func)
+      const action = createAC('NAME', func)
 
       const result = action()(dispatcher)
 
@@ -134,7 +134,7 @@ describe('asyncAction', () => {
     it('sends different status on different calls', () => {
       const func = () => Promise.reject(new Error('Something went wrong'))
       const dispatcher = sinon.fake()
-      const action = asyncAction('NAME', func)
+      const action = createAC('NAME', func)
 
       const result = action()(dispatcher)
 
@@ -149,7 +149,7 @@ describe('asyncAction', () => {
     it('has no payload on PENDING', () => {
       const func = sinon.fake()
       const dispatcher = sinon.fake()
-      const action = asyncAction('NAME', func)
+      const action = createAC('NAME', func)
 
       action()(dispatcher)
 
@@ -160,7 +160,7 @@ describe('asyncAction', () => {
       const payload = { data: 'Result' }
       const func = () => Promise.resolve(payload)
       const dispatcher = sinon.fake()
-      const action = asyncAction('NAME', func)
+      const action = createAC('NAME', func)
 
       const result = action()(dispatcher)
 
@@ -176,7 +176,7 @@ describe('asyncAction', () => {
       const error = new Error('Something went wrong')
       const func = () => Promise.reject(error)
       const dispatcher = sinon.fake()
-      const action = asyncAction('NAME', func)
+      const action = createAC('NAME', func)
 
       const result = action()(dispatcher)
 
@@ -195,7 +195,7 @@ describe('asyncAction', () => {
       const getState = () => ({})
       const innerThunk = sinon.fake(() => {})
       const func = () => innerThunk
-      const action = asyncAction('NAME', func)
+      const action = createAC('NAME', func)
 
       action()(() => {}, getState)
 
