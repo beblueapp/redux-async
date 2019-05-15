@@ -1,6 +1,6 @@
 // @flow
-import createAC from './action'
-import createR from './reducer'
+import createAC from './createAC'
+import createR from './createR'
 
 export {
   createAC,

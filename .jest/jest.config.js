@@ -6,5 +6,5 @@ module.exports = {
   testMatch: [
     '**/src/**/*.spec.js'
   ],
-  setupTestFrameworkScriptFile: path.resolve(__dirname, 'utilities.setup.js')
+  setupFilesAfterEnv: [path.resolve(__dirname, 'utilities.setup.js')]
 }
