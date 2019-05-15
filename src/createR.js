@@ -1,8 +1,13 @@
 // @flow
-import type { Action } from 'redux'
+import { STATUS, prefixAT } from './actions'
+import type { Action } from './actions'
 
-import { STATUS } from './types'
-import type { State, AsyncMeta } from './types'
+export type State<D> = {
+  status: string,
+  loading: boolean,
+  error: boolean,
+  data: D
+}
 
 const initialState: State<any> = {
   status: 'IDLE',
@@ -11,13 +16,14 @@ const initialState: State<any> = {
   data: null
 }
 
-type Reducer<D> = (State<D>, Action<D, AsyncMeta>) => State<D>
-type CreateR<D> = (string) => Reducer<D>
+type Reducer<D, E> = (State<D>, Action<D | E>) => State<D>
+type CreateR<D, E> = (string) => Reducer<D, E>
 
-const createR: CreateR<any> = name => (state = initialState, action) => {
-  const { payload, meta } = action
+const createR: CreateR<any, any> = name => (state = initialState, action) => {
+  const { type, payload, meta } = action
 
   if (!meta || (meta && meta.name !== name)) return state
+  if (!type.startsWith(prefixAT(name))) return state
 
   switch (meta.status) {
     case STATUS.PENDING:

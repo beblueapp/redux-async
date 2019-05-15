@@ -1,4 +1,5 @@
-import createAC from './action'
+import createAC from './createAC'
+import { createAT, STATUS } from './actions'
 
 describe('createAC', () => {
   it('pipes the received parameters to given function', () => {
@@ -83,7 +84,7 @@ describe('createAC', () => {
 
       expect(dispatcher.calledBefore(func)).to.be.true
       expect(func.calledAfter(dispatcher)).to.be.true
-      expect(dispatcher.firstCall.args[0]).to.have.property('type', 'NAME_PENDING')
+      expect(dispatcher.firstCall.args[0]).to.have.property('type', createAT('NAME', STATUS.PENDING))
     })
 
     it('FULFILLED on promise resolution', () => {
@@ -97,7 +98,7 @@ describe('createAC', () => {
 
       return result.then(() => {
         expect(dispatcher.calledTwice).to.be.true
-        expect(dispatcher.secondCall.args[0]).to.have.property('type', 'NAME_FULFILLED')
+        expect(dispatcher.secondCall.args[0]).to.have.property('type', createAT('NAME', STATUS.FULFILLED))
       })
     })
 
@@ -112,7 +113,7 @@ describe('createAC', () => {
 
       return result.catch(() => {
         expect(dispatcher.calledTwice).to.be.true
-        expect(dispatcher.secondCall.args[0]).to.have.property('type', 'NAME_REJECTED')
+        expect(dispatcher.secondCall.args[0]).to.have.property('type', createAT('NAME', STATUS.REJECTED))
       })
     })
   })
@@ -153,7 +154,7 @@ describe('createAC', () => {
 
       action()(dispatcher)
 
-      expect(dispatcher.firstCall.args[0]).to.be.like({ type: 'NAME_PENDING' })
+      expect(dispatcher.firstCall.args[0]).to.be.like({ type: createAT('NAME', STATUS.PENDING) })
     })
 
     it('has function result as payload on FULFILLED', () => {
@@ -166,7 +167,7 @@ describe('createAC', () => {
 
       return result.then(() => {
         expect(dispatcher.secondCall.args[0]).to.be.like({
-          type: 'NAME_FULFILLED',
+          type: createAT('NAME', STATUS.FULFILLED),
           payload
         })
       })
@@ -182,7 +183,7 @@ describe('createAC', () => {
 
       return result.catch(() => {
         expect(dispatcher.secondCall.args[0]).to.be.like({
-          type: 'NAME_REJECTED',
+          type: createAT('NAME', STATUS.REJECTED),
           payload: error,
           error: true
         })
