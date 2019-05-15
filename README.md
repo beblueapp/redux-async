@@ -1,5 +1,6 @@
 # Redux Async
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/b1e69af67fee4699aa886a6ac69e909d)](https://app.codacy.com/app/beblue-eng/redux-async?utm_source=github.com&utm_medium=referral&utm_content=beblueapp/redux-async&utm_campaign=Badge_Grade_Dashboard)
 [![Build Status](https://travis-ci.org/beblueapp/redux-async.svg?branch=master)](https://travis-ci.org/beblueapp/redux-async) [![codecov](https://codecov.io/gh/beblueapp/redux-async/branch/master/graph/badge.svg)](https://codecov.io/gh/beblueapp/redux-async)
 
 > There are only two hard things in Computer Science: cache invalidation and
