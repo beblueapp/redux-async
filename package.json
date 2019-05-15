@@ -20,6 +20,14 @@
     "type": "git",
     "url": "git+https://github.com/beblueapp/redux-async.git"
   },
+  "files": [
+    "/dist",
+    "/LICENSE.md",
+    "/README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "keywords": [
     "redux",
     "redux-thunk",
