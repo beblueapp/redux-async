@@ -1,6 +1,6 @@
 # Redux Async
 
-[![Build Status](https://travis-ci.org/beblueapp/redux-async.svg?branch=master)](https://travis-ci.org/beblueapp/redux-async)
+[![Build Status](https://travis-ci.org/beblueapp/redux-async.svg?branch=master)](https://travis-ci.org/beblueapp/redux-async) [![codecov](https://codecov.io/gh/beblueapp/redux-async/branch/master/graph/badge.svg)](https://codecov.io/gh/beblueapp/redux-async)
 
 > There are only two hard things in Computer Science: cache invalidation and
 > naming things.
