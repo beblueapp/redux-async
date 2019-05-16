@@ -5,15 +5,26 @@ cache: yarn
 git:
   quiet: true
 
-install: yarn
-script:
-  - yarn run lint
-  - yarn run test --coverage
-  - yarn codecov
-  - yarn run build
+stages:
+  - test
+  - deploy
 
-deploy:
-  provider: npm
-  email: "$NPM_EMAIL"
-  api_key: "$NPM_TOKEN"
-  skip_cleanup: true
+jobs:
+  include:
+    - stage: test
+      install: yarn
+      script:
+        - yarn run lint
+        - yarn run test --coverage
+        - yarn codecov
+
+    - stage: deploy
+      if: tag IS present
+      script: yarn run build
+      deploy:
+        provider: npm
+        email: "$NPM_EMAIL"
+        api_key: "$NPM_TOKEN"
+        skip_cleanup: true
+        on:
+          tags: true
