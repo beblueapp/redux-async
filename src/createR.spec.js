@@ -67,31 +67,32 @@ describe('createR > reducer', () => {
   })
 
   describe('error tracking', () => {
-    it('starts false once we don\'t know what\'ll happen', () => {
+    it('starts null once we don\'t know what\'ll happen', () => {
       const state = reducer(undefined, {})
 
-      expect(state.error).to.be.false
+      expect(state.error).to.be.null
     })
 
     // If we start the async again we should reset what've happened before
-    it('turns false on PENDING', () => {
+    it('turns null on PENDING', () => {
       const state = reducer({ error: true }, pending(name))
 
-      expect(state.error).to.be.false
+      expect(state.error).to.be.null
     })
 
     // In theory this scenario should be invalid once PENDING turns it into false,
     // and every async action should be PENDING first. However, better safe than sorry
-    it('turns false on FULFILLED', () => {
+    it('turns null on FULFILLED', () => {
       const state = reducer({ error: true }, fulfilled(name, {}))
 
-      expect(state.error).to.be.false
+      expect(state.error).to.be.null
     })
 
-    it('turns true on REJECTED', () => {
-      const state = reducer({ error: false }, rejected(name, {}))
+    it('becomes payload on REJECTED', () => {
+      const error = new Error('Something went wrong')
+      const state = reducer({ data: 'qwer' }, rejected(name, error))
 
-      expect(state.error).to.be.true
+      expect(state.error).to.be.equal(error)
     })
   })
 
@@ -115,11 +116,11 @@ describe('createR > reducer', () => {
       expect(state.data).to.be.equal(payload)
     })
 
-    it('becomes payload on REJECTED', () => {
+    it('turns null on REJECTED', () => {
       const error = new Error('Something went wrong')
       const state = reducer({ data: 'qwer' }, rejected(name, error))
 
-      expect(state.data).to.be.equal(error)
+      expect(state.data).to.be.null
     })
   })
 })
