@@ -2,21 +2,21 @@
 import { STATUS, prefixAT } from './actions'
 import type { Action } from './actions'
 
-export type State<D> = {
+export type State<D, E> = {
   status: string,
   loading: boolean,
-  error: boolean,
-  data: D
+  error: ?E,
+  data: ?D
 }
 
-const initialState: State<any> = {
-  status: 'IDLE',
+const initialState: State<any, any> = {
+  status: STATUS.IDLE,
   loading: false,
-  error: false,
+  error: null,
   data: null
 }
 
-type Reducer<D, E> = (State<D>, Action<D | E>) => State<D>
+type Reducer<D, E> = (State<D, E>, Action<D | E>) => State<D, E>
 type CreateR<D, E> = (string) => Reducer<D, E>
 
 const createR: CreateR<any, any> = name => (state = initialState, action) => {
@@ -30,22 +30,22 @@ const createR: CreateR<any, any> = name => (state = initialState, action) => {
       return {
         status: STATUS.PENDING,
         loading: true,
-        error: false,
+        error: null,
         data: null
       }
     case STATUS.FULFILLED:
       return {
         status: STATUS.FULFILLED,
         loading: false,
-        error: false,
+        error: null,
         data: payload
       }
     case STATUS.REJECTED:
       return {
         status: STATUS.REJECTED,
         loading: false,
-        error: true,
-        data: payload
+        error: payload,
+        data: null
       }
     default:
       return state

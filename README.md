@@ -55,7 +55,7 @@ const Customers = ({ type, customers, fetchCustomers }) => {
 
 
     return (customers.error
-     ? <div>Something bad happened: {customers.data.response.statusText}</div>
+     ? <div>Something bad happened: {customers.error.response.statusText}</div>
      : <ul>
         {customers.data.map(c => <li key={c.id}>{c.name}</li>)}
     </ul>)
@@ -66,10 +66,9 @@ const Customers = ({ type, customers, fetchCustomers }) => {
 
 As any reducer on any redux powered application, it'll just capture the async actions
 and change the state accordingly. The default behavior for the async reducer is to
-control every possible combination and return all the state, however, sometimes we
-want just some piece of data, this can be controlled by a second parameter that'll
-pick only the relevant data to you. Below you can see a reducer which will handle
-actions of name `'FETCH_CUSTOMERS'` under the `customers` property of our state.
+control every possible combination and return all the state. Below you can see a
+reducer which will handle actions of name `'FETCH_CUSTOMERS'` under the `customers`
+property of our state.
 
 ```javascript
 // Reducer
