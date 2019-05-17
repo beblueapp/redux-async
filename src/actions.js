@@ -1,6 +1,3 @@
-// @flow
-import type { Action as ReduxAction } from 'redux'
-
 export const STATUS = {
   IDLE: 'IDLE',
   PENDING: 'PENDING',
@@ -8,30 +5,26 @@ export const STATUS = {
   REJECTED: 'REJECTED'
 }
 
-export type Status = $Keys<typeof STATUS>
-export type Meta = { name: string, status: Status }
-export type Action<P> = ReduxAction<P, Meta>
+const prefixAT = name => `@@redux-async/${name}`
+const createAT = (name, status) => `${prefixAT(name)}/${status}`
 
-const prefixAT = (name: string): string => `@@redux-async/${name}`
-const createAT = (name: string, status: Status): string => `${prefixAT(name)}/${status}`
-
-const idle = (name: string): Action<void> => ({
+const idle = name => ({
   type: createAT(name, STATUS.IDLE),
   meta: { name, status: STATUS.IDLE }
 })
 
-const pending = (name: string): Action<void> => ({
+const pending = name => ({
   type: createAT(name, STATUS.PENDING),
   meta: { name, status: STATUS.PENDING }
 })
 
-const fulfilled = <P>(name: string, payload: P): Action<P> => ({
+const fulfilled = (name, payload) => ({
   type: createAT(name, STATUS.FULFILLED),
   payload,
   meta: { name, status: STATUS.FULFILLED }
 })
 
-const rejected = <E>(name: string, error: E): Action<E> => ({
+const rejected = (name, error) => ({
   type: createAT(name, STATUS.REJECTED),
   payload: error,
   error: true,
