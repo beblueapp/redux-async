@@ -3,13 +3,9 @@
   "parserOptions": {
     "ecmaVersion": 6
   },
-  "plugins": [
-    "flowtype"
-  ],
   "extends": [
     "airbnb-base",
-    "standard",
-    "plugin:flowtype/recommended"
+    "standard"
   ],
   "env": {
     "browser": true,
