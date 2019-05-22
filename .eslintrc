@@ -4,8 +4,7 @@
     "ecmaVersion": 6
   },
   "extends": [
-    "airbnb-base",
-    "standard"
+    "@beblueapp/eslint-config-base"
   ],
   "env": {
     "browser": true,
