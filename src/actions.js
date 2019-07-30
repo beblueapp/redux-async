@@ -2,7 +2,7 @@ export const STATUS = {
   IDLE: 'IDLE',
   PENDING: 'PENDING',
   FULFILLED: 'FULFILLED',
-  REJECTED: 'REJECTED'
+  REJECTED: 'REJECTED',
 }
 
 const prefixAT = name => `@@redux-async/${name}`
@@ -10,25 +10,25 @@ const createAT = (name, status) => `${prefixAT(name)}/${status}`
 
 const idle = name => ({
   type: createAT(name, STATUS.IDLE),
-  meta: { name, status: STATUS.IDLE }
+  meta: { name, status: STATUS.IDLE },
 })
 
 const pending = name => ({
   type: createAT(name, STATUS.PENDING),
-  meta: { name, status: STATUS.PENDING }
+  meta: { name, status: STATUS.PENDING },
 })
 
 const fulfilled = (name, payload) => ({
   type: createAT(name, STATUS.FULFILLED),
   payload,
-  meta: { name, status: STATUS.FULFILLED }
+  meta: { name, status: STATUS.FULFILLED },
 })
 
 const rejected = (name, error) => ({
   type: createAT(name, STATUS.REJECTED),
   payload: error,
   error: true,
-  meta: { name, status: STATUS.REJECTED }
+  meta: { name, status: STATUS.REJECTED },
 })
 
 export {
@@ -37,5 +37,5 @@ export {
   idle,
   pending,
   fulfilled,
-  rejected
+  rejected,
 }

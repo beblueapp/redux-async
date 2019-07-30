@@ -1,5 +1,5 @@
 import createR from './createR'
-import { STATUS, pending, fulfilled, rejected } from './actions'
+import { STATUS, createAT, pending, fulfilled, rejected, idle } from './actions'
 
 describe('createR', () => {
   it('handles actions only for that name', () => {
@@ -17,6 +17,42 @@ describe('createR', () => {
 describe('createR > reducer', () => {
   const name = 'NAME'
   const reducer = createR(name)
+
+  it('starts as IDLE and not loading', () => {
+    const state = reducer(undefined, {})
+
+    expect(state.status).to.be.equal(STATUS.IDLE)
+    expect(state.loading).to.be.false
+  })
+
+  it('has no data or error by default', () => {
+    const state = reducer(undefined, {})
+
+    expect(state.data).to.be.null
+    expect(state.error).to.be.null
+  })
+
+  it('returns to initial state on IDLE', () => {
+    const initialState = { status: STATUS.IDLE, loading: false, error: null, data: null }
+    const state = { error: true, data: [], loading: true, status: STATUS.REJECTED }
+    const newState = reducer(state, idle(name))
+
+    expect(newState).to.be.like(initialState)
+  })
+
+  it('returns current state on unknown actions', () => {
+    const state = { loading: false, error: 'asdf', data: [], status: STATUS.REJECTED }
+    const newState = reducer(state, { type: 'UNKNOWN', meta: { name } })
+
+    expect(newState).to.be.equal(state)
+  })
+
+  it('returns current state on unknown statuses', () => {
+    const state = { loading: false, error: 'asdf', data: [], status: STATUS.REJECTED }
+    const newState = reducer(state, { type: createAT(name, 'SOMETHING'), meta: { name, status: 'SOMETHING' } })
+
+    expect(newState).to.be.equal(state)
+  })
 
   describe('status tracking', () => {
     it('starts as IDLE given nothing was executed', () => {

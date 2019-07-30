@@ -3,5 +3,5 @@ import createR from './createR'
 
 export {
   createAC,
-  createR
+  createR,
 }
