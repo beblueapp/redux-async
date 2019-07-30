@@ -51,17 +51,17 @@ export const fetchCustomers = createAC('FETCH_CUSTOMERS', index)
 
 // Component
 const Customers = ({ type, customers, fetchCustomers }) => {
-    useEffect(() => {
-        fetchCustomers(type)
-            .catch(({ response }) => console.log('An error has occured', response.data))
-    }, [type])
+  useEffect(() => {
+      fetchCustomers(type)
+          .catch(({ response }) => console.log('An error has occured', response.data))
+  }, [type])
 
 
-    return (customers.error
-     ? <div>Something bad happened: {customers.error.response.statusText}</div>
-     : <ul>
-        {customers.data.map(c => <li key={c.id}>{c.name}</li>)}
-    </ul>)
+  return (customers.error
+   ? <div>Something bad happened: {customers.error.response.statusText}</div>
+   : <ul>
+      {customers.data.map(c => <li key={c.id}>{c.name}</li>)}
+  </ul>)
 }
 ```
 
@@ -78,7 +78,7 @@ property of our state.
 import { createR } from '@beblueapp/redux-async'
 
 export combineReducers({
-    customers: createR('FETCH_CUSTOMERS')
+  customers: createR('FETCH_CUSTOMERS')
 })
 ```
 

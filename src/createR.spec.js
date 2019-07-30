@@ -2,21 +2,18 @@ import createR from './createR'
 import { STATUS, createAT, pending, fulfilled, rejected, idle } from './actions'
 
 describe('createR', () => {
+  const name = 'NAME'
+  const reducer = createR(name)
+
   it('handles actions only for that name', () => {
-    const reducer = createR('NAME')
     const state = {}
 
     const untouchedState = reducer(state, pending('ALIAS'))
-    const newState = reducer(state, pending('NAME'))
+    const newState = reducer(state, pending(name))
 
     expect(untouchedState).to.be.equal(state)
     expect(newState).to.not.be.equal(state)
   })
-})
-
-describe('createR > reducer', () => {
-  const name = 'NAME'
-  const reducer = createR(name)
 
   it('starts as IDLE and not loading', () => {
     const state = reducer(undefined, {})
@@ -158,5 +155,69 @@ describe('createR > reducer', () => {
 
       expect(state.data).to.be.null
     })
+  })
+})
+
+describe('createR > reducer', () => {
+  const name = 'NAME'
+  const create = r => createR(name, r)
+
+  it('is not called on idle', () => {
+    const inner = sinon.fake()
+    const reducer = create(inner)
+
+    reducer({}, idle(name))
+
+    expect(inner.callCount).to.be.equal(0)
+  })
+
+  it('is called on pending, fulfilled and rejected', () => {
+    const inner = sinon.fake()
+    const reducer = create(inner)
+
+    reducer({}, pending(name))
+    reducer({}, fulfilled(name, null))
+    reducer({}, rejected(name, null))
+
+    expect(inner.callCount).to.be.equal(3)
+  })
+
+  it('is not called on unknown actions', () => {
+    const inner = sinon.fake()
+    const reducer = create(inner)
+
+    reducer({}, { type: createAT(name, 'SOMETHING'), meta: { status: 'SOMETHING' } })
+
+    expect(inner.callCount).to.be.equal(0)
+  })
+
+  it('is called with current state without status and loading', () => {
+    const inner = sinon.fake()
+    const reducer = create(inner)
+    const state = { status: STATUS.PENDING, loading: true, error: 'asdf', data: [] }
+
+    reducer(state, fulfilled(name, 'qwer'))
+
+    expect(inner.firstCall.args[0]).to.be.like({ error: 'asdf', data: [] })
+  })
+
+  it('receives an action with status as type', () => {
+    const inner = sinon.fake()
+    const reducer = create(inner)
+
+    reducer({}, rejected(name, 'asdf'))
+
+    expect(inner.firstCall.args[1]).to.have.property('type', STATUS.REJECTED)
+  })
+
+  it('receives payload as it comes on main reducer', () => {
+    const inner = sinon.fake()
+    const reducer = create(inner)
+
+    reducer({}, rejected(name, 'asdf'))
+    reducer({}, fulfilled(name, 'qwer'))
+
+    expect(inner.firstCall.args[1]).to.be.like({ error: true, payload: 'asdf' })
+    expect(inner.secondCall.args[1]).to.be.like({ payload: 'qwer' })
   })
 })
