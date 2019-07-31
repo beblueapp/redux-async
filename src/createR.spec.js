@@ -49,7 +49,7 @@ describe('createR', () => {
     const action = { type: createAT(name, 'SOMETHING'), meta: { name, status: 'SOMETHING' } }
     const newState = reducer(state, action)
 
-    expect(newState).to.be.like(state)
+    expect(newState).to.be.equal(state)
   })
 
   describe('status tracking', () => {
@@ -163,16 +163,19 @@ describe('createR > reducer', () => {
   const name = 'NAME'
   const create = r => createR(name, r)
 
-  it('is called on every action', () => {
+  it('is called on every action except reset', () => {
     const inner = sinon.fake.returns({})
     const reducer = create(inner)
 
-    reducer({}, reset(name))
     reducer({}, pending(name))
     reducer({}, fulfilled(name, null))
     reducer({}, rejected(name, null))
 
-    expect(inner.callCount).to.be.equal(4)
+    expect(inner.callCount).to.be.equal(3)
+
+    reducer({}, reset(name))
+
+    expect(inner.callCount).to.be.equal(3)
   })
 
   it('is not called on unknown actions', () => {

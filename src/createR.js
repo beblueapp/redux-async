@@ -11,11 +11,6 @@ const defaultReducer = (state, action) => {
   const { type, payload } = action
 
   switch (type) {
-    case STATUS.IDLE:
-      return {
-        error: null,
-        data: null,
-      }
     case STATUS.PENDING:
       return {
         error: null,
@@ -40,11 +35,6 @@ const trackingReducer = (state, action) => {
   const { type } = action
 
   switch (type) {
-    case STATUS.IDLE:
-      return {
-        status: STATUS.IDLE,
-        loading: false,
-      }
     case STATUS.PENDING:
       return {
         status: STATUS.PENDING,
@@ -67,9 +57,11 @@ const trackingReducer = (state, action) => {
 
 const guard = name => (action) => {
   const { type, meta } = action
+  const statuses = Object.values(STATUS)
 
   if (!meta || (meta && meta.name !== name)) return false
   if (!type || !type.startsWith(prefixAT(name))) return false
+  if (!statuses.includes(meta.status)) return false
 
   return true
 }
@@ -78,6 +70,7 @@ const createR = (name, resultReducer = defaultReducer) => (state = initialState,
   const { meta } = action
 
   if (!guard(name)(action)) return state
+  if (meta.status === STATUS.IDLE) return initialState
 
   const innerResultState = { error: state.error, data: state.data }
   const innerTrackingState = { status: state.status, loading: state.loading }
