@@ -46,9 +46,10 @@ describe('createR', () => {
 
   it('returns current state on unknown statuses', () => {
     const state = { loading: false, error: 'asdf', data: [], status: STATUS.REJECTED }
-    const newState = reducer(state, { type: createAT(name, 'SOMETHING'), meta: { name, status: 'SOMETHING' } })
+    const action = { type: createAT(name, 'SOMETHING'), meta: { name, status: 'SOMETHING' } }
+    const newState = reducer(state, action)
 
-    expect(newState).to.be.equal(state)
+    expect(newState).to.be.like(state)
   })
 
   describe('status tracking', () => {
@@ -162,24 +163,16 @@ describe('createR > reducer', () => {
   const name = 'NAME'
   const create = r => createR(name, r)
 
-  it('is not called on idle', () => {
+  it('is called on every action', () => {
     const inner = sinon.fake.returns({})
     const reducer = create(inner)
 
     reducer({}, reset(name))
-
-    expect(inner.callCount).to.be.equal(0)
-  })
-
-  it('is called on pending, fulfilled and rejected', () => {
-    const inner = sinon.fake.returns({})
-    const reducer = create(inner)
-
     reducer({}, pending(name))
     reducer({}, fulfilled(name, null))
     reducer({}, rejected(name, null))
 
-    expect(inner.callCount).to.be.equal(3)
+    expect(inner.callCount).to.be.equal(4)
   })
 
   it('is not called on unknown actions', () => {
