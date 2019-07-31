@@ -1,5 +1,5 @@
 import createR from './createR'
-import { STATUS, createAT, pending, fulfilled, rejected, idle } from './actions'
+import { STATUS, createAT, pending, fulfilled, rejected, reset } from './actions'
 
 describe('createR', () => {
   const name = 'NAME'
@@ -32,7 +32,7 @@ describe('createR', () => {
   it('returns to initial state on IDLE', () => {
     const initialState = { status: STATUS.IDLE, loading: false, error: null, data: null }
     const state = { error: true, data: [], loading: true, status: STATUS.REJECTED }
-    const newState = reducer(state, idle(name))
+    const newState = reducer(state, reset(name))
 
     expect(newState).to.be.like(initialState)
   })
@@ -163,16 +163,16 @@ describe('createR > reducer', () => {
   const create = r => createR(name, r)
 
   it('is not called on idle', () => {
-    const inner = sinon.fake()
+    const inner = sinon.fake.returns({})
     const reducer = create(inner)
 
-    reducer({}, idle(name))
+    reducer({}, reset(name))
 
     expect(inner.callCount).to.be.equal(0)
   })
 
   it('is called on pending, fulfilled and rejected', () => {
-    const inner = sinon.fake()
+    const inner = sinon.fake.returns({})
     const reducer = create(inner)
 
     reducer({}, pending(name))
@@ -183,7 +183,7 @@ describe('createR > reducer', () => {
   })
 
   it('is not called on unknown actions', () => {
-    const inner = sinon.fake()
+    const inner = sinon.fake.returns({})
     const reducer = create(inner)
 
     reducer({}, { type: createAT(name, 'SOMETHING'), meta: { status: 'SOMETHING' } })
@@ -192,7 +192,7 @@ describe('createR > reducer', () => {
   })
 
   it('is called with current state without status and loading', () => {
-    const inner = sinon.fake()
+    const inner = sinon.fake.returns({})
     const reducer = create(inner)
     const state = { status: STATUS.PENDING, loading: true, error: 'asdf', data: [] }
 
@@ -202,7 +202,7 @@ describe('createR > reducer', () => {
   })
 
   it('receives an action with status as type', () => {
-    const inner = sinon.fake()
+    const inner = sinon.fake.returns({})
     const reducer = create(inner)
 
     reducer({}, rejected(name, 'asdf'))
@@ -211,7 +211,7 @@ describe('createR > reducer', () => {
   })
 
   it('receives payload as it comes on main reducer', () => {
-    const inner = sinon.fake()
+    const inner = sinon.fake.returns({})
     const reducer = create(inner)
 
     reducer({}, rejected(name, 'asdf'))
@@ -219,5 +219,15 @@ describe('createR > reducer', () => {
 
     expect(inner.firstCall.args[1]).to.be.like({ error: true, payload: 'asdf' })
     expect(inner.secondCall.args[1]).to.be.like({ payload: 'qwer' })
+  })
+
+  it('should return error and data to be used as next state', () => {
+    const inner = () => ({ error: 'asdf', data: [1], misc: 'asdf' })
+    const reducer = create(inner)
+
+    const state = reducer({}, fulfilled(name, 'qwer'))
+
+    expect(state).to.not.have.property('misc')
+    expect(state).to.be.like({ error: 'asdf', data: [1] })
   })
 })

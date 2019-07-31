@@ -8,7 +8,7 @@ export const STATUS = {
 const prefixAT = name => `@@redux-async/${name}`
 const createAT = (name, status) => `${prefixAT(name)}/${status}`
 
-const idle = name => ({
+const reset = name => ({
   type: createAT(name, STATUS.IDLE),
   meta: { name, status: STATUS.IDLE },
 })
@@ -34,7 +34,7 @@ const rejected = (name, error) => ({
 export {
   createAT,
   prefixAT,
-  idle,
+  reset,
   pending,
   fulfilled,
   rejected,

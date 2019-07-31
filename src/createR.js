@@ -7,8 +7,31 @@ const initialState = {
   data: null,
 }
 
-const createR = (name, reducer = x => x) => (state = initialState, action) => {
-  const { type, payload, meta } = action
+const defaultReducer = (state, action) => {
+  const { type, payload } = action
+
+  switch (type) {
+    case STATUS.PENDING:
+      return {
+        error: null,
+        data: null,
+      }
+    case STATUS.FULFILLED:
+      return {
+        error: null,
+        data: payload,
+      }
+    case STATUS.REJECTED:
+      return {
+        error: payload,
+        data: null,
+      }
+    default: return state
+  }
+}
+
+const createR = (name, reducer = defaultReducer) => (state = initialState, action) => {
+  const { type, meta } = action
 
   if (!meta || (meta && meta.name !== name)) return state
   if (!type || !type.startsWith(prefixAT(name))) return state
@@ -19,30 +42,33 @@ const createR = (name, reducer = x => x) => (state = initialState, action) => {
   switch (meta.status) {
     case STATUS.IDLE:
       return initialState
-    case STATUS.PENDING:
-      reducer(innerState, innerAction)
+    case STATUS.PENDING: {
+      const { error, data } = reducer(innerState, innerAction)
       return {
+        data,
+        error,
         status: STATUS.PENDING,
         loading: true,
-        error: null,
-        data: null,
       }
-    case STATUS.FULFILLED:
-      reducer(innerState, innerAction)
+    }
+    case STATUS.FULFILLED: {
+      const { error, data } = reducer(innerState, innerAction)
       return {
+        data,
+        error,
         status: STATUS.FULFILLED,
         loading: false,
-        error: null,
-        data: payload,
       }
-    case STATUS.REJECTED:
-      reducer(innerState, innerAction)
+    }
+    case STATUS.REJECTED: {
+      const { error, data } = reducer(innerState, innerAction)
       return {
+        data,
+        error,
         status: STATUS.REJECTED,
         loading: false,
-        error: payload,
-        data: null,
       }
+    }
     default:
       return state
   }
