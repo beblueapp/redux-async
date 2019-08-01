@@ -635,10 +635,10 @@
     lodash "^4.17.11"
     to-fast-properties "^2.0.0"
 
-"@beblueapp/eslint-config-base@^0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@beblueapp/eslint-config-base/-/eslint-config-base-0.0.2.tgz#527e9d1765f426c58ea1e026500bb21995858bdd"
-  integrity sha512-/9CZwu5i8VfZjNYcTwl1AWOcRYUCiYmNF/EyYfHarV0u4ya5Ezv6ldjB5hAaHnnxXdolrWRnBmMloqLMCQ/H2w==
+"@beblueapp/eslint-config-base@^0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@beblueapp/eslint-config-base/-/eslint-config-base-0.0.3.tgz#56de342caee35478c3e327bb7d366a820f6fc8b8"
+  integrity sha512-78h/soF0KmhhHqrmd5CQ1sDUBavIkgED4A+7JUVCTKdI5rRHFtf32kHaZLBiTr3QE5ZK6ydhfJzbNBAnKkG3gA==
   dependencies:
     confusing-browser-globals "^1.0.7"
     object.assign "^4.1.0"

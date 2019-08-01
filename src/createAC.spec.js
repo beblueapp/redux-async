@@ -168,7 +168,7 @@ describe('createAC', () => {
       return result.then(() => {
         expect(dispatcher.secondCall.args[0]).to.be.like({
           type: createAT('NAME', STATUS.FULFILLED),
-          payload
+          payload,
         })
       })
     })
@@ -185,7 +185,7 @@ describe('createAC', () => {
         expect(dispatcher.secondCall.args[0]).to.be.like({
           type: createAT('NAME', STATUS.REJECTED),
           payload: error,
-          error: true
+          error: true,
         })
       })
     })
