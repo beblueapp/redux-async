@@ -23,7 +23,7 @@ const createAC = (name, func) => (...args) => (dispatch, getState) => {
       dispatch(rejected(name, reason))
 
       throw reason
-    }
+    },
   )
 }
 
