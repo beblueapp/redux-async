@@ -1,6 +1,6 @@
 {
   "name": "@beblueapp/redux-async",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Controls async dispatches on a standardized manner",
   "main": "dist/index.js",
   "scripts": {
