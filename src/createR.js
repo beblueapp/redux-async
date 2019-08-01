@@ -7,9 +7,7 @@ const initialState = {
   data: null,
 }
 
-const defaultReducer = (state, action) => {
-  const { type, payload } = action
-
+const defaultReducer = (state, { type, payload }) => {
   switch (type) {
     case STATUS.PENDING:
       return {
@@ -31,9 +29,7 @@ const defaultReducer = (state, action) => {
   }
 }
 
-const trackingReducer = (state, action) => {
-  const { type } = action
-
+const trackingReducer = (state, { type }) => {
   switch (type) {
     case STATUS.PENDING:
       return {
@@ -55,8 +51,7 @@ const trackingReducer = (state, action) => {
   }
 }
 
-const guard = name => (action) => {
-  const { type, meta } = action
+const guard = name => ({ type, meta }) => {
   const statuses = Object.values(STATUS)
 
   if (!meta || (meta && meta.name !== name)) return false
