@@ -5,6 +5,10 @@ export const STATUS = {
   REJECTED: 'REJECTED',
 }
 
+// I know the action type could be just this, however, the actions logged on
+// redux-dev-tools would require us to see its content to know the real intent.
+// By prefixing the name with `@@redux-async` I scope the actions, and by
+// appending the status I give them meaning.
 const prefixAT = name => `@@redux-async/${name}`
 const createAT = (name, status) => `${prefixAT(name)}/${status}`
 
@@ -31,7 +35,15 @@ const rejected = (name, error) => ({
   meta: { name, status: STATUS.REJECTED },
 })
 
+const factory = name => ({
+  reset: () => reset(name),
+  pending: () => pending(name),
+  fulfilled: payload => fulfilled(name, payload),
+  rejected: error => rejected(name, error),
+})
+
 export {
+  factory as default,
   createAT,
   prefixAT,
   reset,

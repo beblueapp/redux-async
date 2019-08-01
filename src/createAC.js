@@ -1,30 +1,34 @@
 // https://blog.logrocket.com/managing-asynchronous-actions-in-redux-1bc7d28a00c6
 // https://medium.com/skyshidigital/simplify-redux-request-success-failure-pattern-ce77340eae06
 
-import { pending, fulfilled, rejected } from './actions'
+import actions from './actions'
 
-const createAC = (name, func) => (...args) => (dispatch, getState) => {
-  dispatch(pending(name))
+const createAC = (name, func) => {
+  const { pending, fulfilled, rejected } = actions(name)
 
-  return new Promise((resolve) => {
-    const result = func(...args)
+  return (...args) => (dispatch, getState) => {
+    dispatch(pending())
 
-    if (typeof result === 'function') {
-      resolve(result(getState))
-    } else {
-      resolve(result)
-    }
-  }).then(
-    (value) => {
-      dispatch(fulfilled(name, value))
+    return new Promise((resolve) => {
+      const result = func(...args)
 
-      return value
-    }, (reason) => {
-      dispatch(rejected(name, reason))
+      if (typeof result === 'function') {
+        resolve(result(getState))
+      } else {
+        resolve(result)
+      }
+    }).then(
+      (value) => {
+        dispatch(fulfilled(value))
 
-      throw reason
-    },
-  )
+        return value
+      }, (reason) => {
+        dispatch(rejected(reason))
+
+        throw reason
+      },
+    )
+  }
 }
 
 export default createAC
