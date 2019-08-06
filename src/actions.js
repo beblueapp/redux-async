@@ -37,9 +37,9 @@ const rejected = (name, error) => ({
 
 const factory = name => ({
   reset: () => reset(name),
-  pending: () => pending(name),
-  fulfilled: payload => fulfilled(name, payload),
-  rejected: error => rejected(name, error),
+  execute: () => pending(name),
+  resolve: payload => fulfilled(name, payload),
+  reject: error => rejected(name, error),
 })
 
 export {
