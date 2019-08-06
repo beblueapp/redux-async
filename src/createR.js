@@ -53,11 +53,9 @@ const trackingReducer = (state, { type }) => {
 
 const createR = (name, resultReducer = defaultReducer) => {
   const prefix = prefixAT(name)
-  const statuses = Object.values(STATUS)
 
   const guard = ({ type, meta }) => {
     if (!meta || meta.name !== name) return false
-    if (!statuses.includes(meta.status)) return false
     if (!type || !type.startsWith(prefix)) return false
 
     return true

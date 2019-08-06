@@ -49,7 +49,7 @@ describe('createR', () => {
     const action = { type: createAT(name, 'SOMETHING'), meta: { name, status: 'SOMETHING' } }
     const newState = reducer(state, action)
 
-    expect(newState).to.be.equal(state)
+    expect(newState).to.be.like(state)
   })
 
   describe('status tracking', () => {
