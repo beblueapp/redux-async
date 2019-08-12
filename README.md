@@ -39,7 +39,7 @@ Given there're many types of asynchronous actions, and sometimes you may just wa
 to wrap a simple function, we enable you to wrap whatever function that returns a
 promise or not, we'll handle each type of function based on its returned type. The
 creator will promissify the function result and dispatch actions according to promise's
-states, below you can see an action creator which will dispatch actions of name
+states. Below you can see an action creator which will dispatch actions of name
 `'FETCH_CUSTOMERS'` containing the result of `index` from customers gateway.
 
 ```javascript
@@ -63,6 +63,11 @@ const Customers = ({ type, customers, fetchCustomers }) => {
       {customers.data.map(c => <li key={c.id}>{c.name}</li>)}
   </ul>)
 }
+
+export default connect(
+  ({ customers }) => ({ customers }),
+  { fetchCustomers }
+)(Customers)
 ```
 
 ### Reducer
