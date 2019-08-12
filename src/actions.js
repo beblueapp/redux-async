@@ -1,4 +1,4 @@
-export const STATUS = {
+const STATUS = {
   IDLE: 'IDLE',
   PENDING: 'PENDING',
   FULFILLED: 'FULFILLED',
@@ -44,10 +44,7 @@ const factory = name => ({
 
 export {
   factory as default,
-  createAT,
+  STATUS,
   prefixAT,
-  reset,
-  pending,
-  fulfilled,
-  rejected,
+  createAT,
 }
