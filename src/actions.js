@@ -1,16 +1,10 @@
-const STATUS = {
-  IDLE: 'IDLE',
-  PENDING: 'PENDING',
-  FULFILLED: 'FULFILLED',
-  REJECTED: 'REJECTED',
-}
+import { STATUS, prefix } from './constants'
 
-// I know the action type could be just this, however, the actions logged on
-// redux-dev-tools would require us to see its content to know the real intent.
-// By prefixing the name with `@@redux-async` I scope the actions, and by
-// appending the status I give them meaning.
-const prefixAT = name => `@@redux-async/${name}`
-const createAT = (name, status) => `${prefixAT(name)}/${status}`
+// I know the action type could be just `${prefix}/${name}`, however, the
+// actions logged on redux-dev-tools would require us to see its content to know
+// the real intent. By prefixing the name with `@@redux-async` I scope the
+// actions, and by appending the status I give them meaning.
+const createAT = (name, status) => `${prefix}/${name}/${status}`
 
 const reset = name => ({
   type: createAT(name, STATUS.IDLE),
@@ -35,16 +29,11 @@ const rejected = (name, error) => ({
   meta: { name, status: STATUS.REJECTED },
 })
 
-const factory = name => ({
+const createC = name => ({
   reset: () => reset(name),
   execute: () => pending(name),
   resolve: payload => fulfilled(name, payload),
   reject: error => rejected(name, error),
 })
 
-export {
-  factory as default,
-  STATUS,
-  prefixAT,
-  createAT,
-}
+export default createC

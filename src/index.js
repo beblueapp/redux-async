@@ -1,10 +1,11 @@
-import actions from './actions'
+import createC from './actions'
 import createAC from './createAC'
 import createR from './createR'
 
 const factory = (name, { creator, reducer }) => {
   const asyncCreator = createAC(name, creator)
   const asyncReducer = createR(name, reducer)
+  const actions = createC(name)
 
   return {
     actions,
@@ -13,4 +14,9 @@ const factory = (name, { creator, reducer }) => {
   }
 }
 
-export default factory
+export {
+  factory as default,
+  createC,
+  createAC,
+  createR,
+}
