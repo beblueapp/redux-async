@@ -138,8 +138,8 @@ describe('createAC', () => {
     })
   })
 
-  describe('calls actions according to function\'s result', () => {
-    it('sends resolve action with result on success', () => {
+  describe('calls actions with function\'s result', () => {
+    it('pass result to resolve on success', () => {
       const payload = { data: 'Result' }
       const func = () => Promise.resolve(payload)
       const dispatcher = sinon.fake()
@@ -152,7 +152,7 @@ describe('createAC', () => {
       })
     })
 
-    it('sends reject action with error on fail', () => {
+    it('pass error to reject on failure', () => {
       const error = new Error('Something went wrong')
       const func = () => Promise.reject(error)
       const dispatcher = sinon.fake()
