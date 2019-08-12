@@ -1,4 +1,4 @@
-import { STATUS, prefixAT } from './actions'
+import { STATUS, prefix } from './constants'
 
 const initialState = {
   status: STATUS.IDLE,
@@ -52,8 +52,6 @@ const trackingReducer = (state, { type }) => {
 }
 
 const createR = (name, resultReducer = defaultReducer) => {
-  const prefix = prefixAT(name)
-
   const guard = ({ type, meta }) => {
     if (!meta || meta.name !== name) return false
     if (!type || !type.startsWith(prefix)) return false

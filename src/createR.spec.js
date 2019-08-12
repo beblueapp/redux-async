@@ -1,5 +1,6 @@
+import { STATUS } from './constants'
 import createR from './createR'
-import createA, { STATUS } from './actions'
+import createA from './actions'
 
 describe('createR', () => {
   const name = 'NAME'
