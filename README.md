@@ -3,8 +3,8 @@
 [![Build Status](https://travis-ci.org/beblueapp/redux-async.svg?branch=master)](https://travis-ci.org/beblueapp/redux-async)
 [![Code Coverage](https://codecov.io/gh/beblueapp/redux-async/branch/master/graph/badge.svg)](https://codecov.io/gh/beblueapp/redux-async)
 [![Code Quality](https://api.codacy.com/project/badge/Grade/b1e69af67fee4699aa886a6ac69e909d)](https://app.codacy.com/app/beblue-eng/redux-async)
-![Version](https://img.shields.io/npm/v/@beblueapp/redux-async.svg)
-![License](https://img.shields.io/npm/l/@beblueapp/redux-async.svg)
+[![Version](https://img.shields.io/npm/v/@beblueapp/redux-async.svg)](https://www.npmjs.com/package/@beblueapp/redux-async)
+[![License](https://img.shields.io/npm/l/@beblueapp/redux-async.svg)](https://github.com/beblueapp/redux-async/blob/master/LICENSE.md)
 
 > There are only two hard things in Computer Science: cache invalidation and
 > naming things.
@@ -39,7 +39,7 @@ Given there're many types of asynchronous actions, and sometimes you may just wa
 to wrap a simple function, we enable you to wrap whatever function that returns a
 promise or not, we'll handle each type of function based on its returned type. The
 creator will promissify the function result and dispatch actions according to promise's
-states, below you can see an action creator which will dispatch actions of name
+states. Below you can see an action creator which will dispatch actions of name
 `'FETCH_CUSTOMERS'` containing the result of `index` from customers gateway.
 
 ```javascript
@@ -63,6 +63,11 @@ const Customers = ({ type, customers, fetchCustomers }) => {
       {customers.data.map(c => <li key={c.id}>{c.name}</li>)}
   </ul>)
 }
+
+export default connect(
+  ({ customers }) => ({ customers }),
+  { fetchCustomers }
+)(Customers)
 ```
 
 ### Reducer

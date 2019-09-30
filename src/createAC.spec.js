@@ -1,5 +1,25 @@
 import createAC from './createAC'
-import { createAT, STATUS } from './actions'
+import factory from './actions'
+
+jest.mock('./actions', () => {
+  // eslint-disable-next-line global-require
+  const sinon = require('sinon')
+  const execute = sinon.spy()
+  const resolve = sinon.spy()
+  const reject = sinon.spy()
+
+  return {
+    __esModule: true,
+    default: () => ({
+      execute,
+      resolve,
+      reject,
+    }),
+  }
+})
+
+const { execute, resolve, reject } = factory()
+afterEach(() => { sinon.reset() })
 
 describe('createAC', () => {
   it('pipes the received parameters to given function', () => {
@@ -75,7 +95,7 @@ describe('createAC', () => {
   })
 
   describe('dispatches according to Promise\'s states', () => {
-    it('PENDING before calling function', () => {
+    it('calls execute before calling the function', () => {
       const func = sinon.fake()
       const dispatcher = sinon.fake()
       const action = createAC('NAME', func)
@@ -84,12 +104,12 @@ describe('createAC', () => {
 
       expect(dispatcher.calledBefore(func)).to.be.true
       expect(func.calledAfter(dispatcher)).to.be.true
-      expect(dispatcher.firstCall.args[0]).to.have.property('type', createAT('NAME', STATUS.PENDING))
+      expect(execute.calledOnce).to.be.true
     })
 
-    it('FULFILLED on promise resolution', () => {
+    it('calls resolve on promise resolution', () => {
       let outerResolve = () => {}
-      const func = () => new Promise((resolve) => { outerResolve = resolve })
+      const func = () => new Promise((res) => { outerResolve = res })
       const dispatcher = sinon.fake()
       const action = createAC('NAME', func)
 
@@ -98,13 +118,13 @@ describe('createAC', () => {
 
       return result.then(() => {
         expect(dispatcher.calledTwice).to.be.true
-        expect(dispatcher.secondCall.args[0]).to.have.property('type', createAT('NAME', STATUS.FULFILLED))
+        expect(resolve.calledOnce).to.be.true
       })
     })
 
-    it('REJECTED on promise rejection', () => {
+    it('calls reject on promise rejection', () => {
       let outerReject = () => {}
-      const func = sinon.fake(() => new Promise((resolve, reject) => { outerReject = reject }))
+      const func = sinon.fake(() => new Promise((res, rej) => { outerReject = rej }))
       const dispatcher = sinon.fake()
       const action = createAC('NAME', func)
 
@@ -113,51 +133,13 @@ describe('createAC', () => {
 
       return result.catch(() => {
         expect(dispatcher.calledTwice).to.be.true
-        expect(dispatcher.secondCall.args[0]).to.have.property('type', createAT('NAME', STATUS.REJECTED))
+        expect(reject.calledOnce).to.be.true
       })
     })
   })
 
-  describe('actions have metadata for Promise\'s states', () => {
-    it('has the name as given on dispatches', () => {
-      const func = () => Promise.resolve({})
-      const dispatcher = sinon.fake()
-      const action = createAC('NAME', func)
-
-      const result = action()(dispatcher)
-
-      return result.then(() => {
-        expect(dispatcher.firstCall.args[0]).to.be.like({ meta: { name: 'NAME' } })
-        expect(dispatcher.secondCall.args[0]).to.be.like({ meta: { name: 'NAME' } })
-      })
-    })
-
-    it('sends different status on different calls', () => {
-      const func = () => Promise.reject(new Error('Something went wrong'))
-      const dispatcher = sinon.fake()
-      const action = createAC('NAME', func)
-
-      const result = action()(dispatcher)
-
-      return result.catch(() => {
-        expect(dispatcher.firstCall.args[0]).to.be.like({ meta: { status: 'PENDING' } })
-        expect(dispatcher.secondCall.args[0]).to.be.like({ meta: { status: 'REJECTED' } })
-      })
-    })
-  })
-
-  describe('actions are FSA compliant', () => {
-    it('has no payload on PENDING', () => {
-      const func = sinon.fake()
-      const dispatcher = sinon.fake()
-      const action = createAC('NAME', func)
-
-      action()(dispatcher)
-
-      expect(dispatcher.firstCall.args[0]).to.be.like({ type: createAT('NAME', STATUS.PENDING) })
-    })
-
-    it('has function result as payload on FULFILLED', () => {
+  describe('calls actions with function\'s result', () => {
+    it('pass result to resolve on success', () => {
       const payload = { data: 'Result' }
       const func = () => Promise.resolve(payload)
       const dispatcher = sinon.fake()
@@ -166,14 +148,11 @@ describe('createAC', () => {
       const result = action()(dispatcher)
 
       return result.then(() => {
-        expect(dispatcher.secondCall.args[0]).to.be.like({
-          type: createAT('NAME', STATUS.FULFILLED),
-          payload,
-        })
+        expect(resolve.firstCall.args[0]).to.be.equal(payload)
       })
     })
 
-    it('has error flag and error payload on REJECTED', () => {
+    it('pass error to reject on failure', () => {
       const error = new Error('Something went wrong')
       const func = () => Promise.reject(error)
       const dispatcher = sinon.fake()
@@ -182,11 +161,7 @@ describe('createAC', () => {
       const result = action()(dispatcher)
 
       return result.catch(() => {
-        expect(dispatcher.secondCall.args[0]).to.be.like({
-          type: createAT('NAME', STATUS.REJECTED),
-          payload: error,
-          error: true,
-        })
+        expect(reject.firstCall.args[0]).to.be.equal(error)
       })
     })
   })

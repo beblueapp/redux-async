@@ -3,3 +3,6 @@
 
 # ESLint ignores hidden folders by default
 !/.jest/
+
+coverage
+reports

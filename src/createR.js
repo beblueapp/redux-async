@@ -1,4 +1,4 @@
-import { STATUS, prefixAT } from './actions'
+import { STATUS, prefix } from './constants'
 
 const initialState = {
   status: STATUS.IDLE,
@@ -51,34 +51,33 @@ const trackingReducer = (state, { type }) => {
   }
 }
 
-const guard = name => ({ type, meta }) => {
-  const statuses = Object.values(STATUS)
+const createR = (name, resultReducer = defaultReducer) => {
+  const guard = ({ type, meta }) => {
+    if (!meta || meta.name !== name) return false
+    if (!type || !type.startsWith(prefix)) return false
 
-  if (!meta || (meta && meta.name !== name)) return false
-  if (!type || !type.startsWith(prefixAT(name))) return false
-  if (!statuses.includes(meta.status)) return false
+    return true
+  }
 
-  return true
-}
+  return (state = initialState, action) => {
+    const { meta } = action
 
-const createR = (name, resultReducer = defaultReducer) => (state = initialState, action) => {
-  const { meta } = action
+    if (!guard(action)) return state
+    if (meta.status === STATUS.IDLE) return initialState
 
-  if (!guard(name)(action)) return state
-  if (meta.status === STATUS.IDLE) return initialState
+    const resultState = { error: state.error, data: state.data }
+    const trackingState = { status: state.status, loading: state.loading }
+    const innerAction = { type: meta.status, payload: action.payload, error: action.error }
 
-  const innerResultState = { error: state.error, data: state.data }
-  const innerTrackingState = { status: state.status, loading: state.loading }
-  const innerAction = { type: meta.status, payload: action.payload, error: action.error }
+    const { error, data } = resultReducer(resultState, innerAction)
+    const { status, loading } = trackingReducer(trackingState, innerAction)
 
-  const { error, data } = resultReducer(innerResultState, innerAction)
-  const { status, loading } = trackingReducer(innerTrackingState, innerAction)
-
-  return {
-    status,
-    loading,
-    error,
-    data,
+    return {
+      status,
+      loading,
+      error,
+      data,
+    }
   }
 }
 

@@ -1,37 +1,76 @@
-import { STATUS, reset, pending, fulfilled, rejected } from './actions'
+import factory from './actions'
 
-describe('actions', () => {
-  const name = 'NAME'
+const name = 'NAME'
+const { reset, execute, resolve, reject } = factory(name)
 
-  // I know the action type could be just this, however, the actions logged on
-  // redux-dev-tools would require us to see its content to know the real intent.
-  // By prefixing the name with `@@redux-async` I scope the actions, and by
-  // appending the status I give them meaning.
-  it('has type prefixed with @@redux-async/NAME', () => {
-    const { type: tReset } = reset(name)
-    const { type: tPending } = pending(name)
-    const { type: tFulfilled } = fulfilled(name, null)
-    const { type: tRejected } = rejected(name, null)
+const testProtocol = (creatorName, fn, { name: actionName, status }) => {
+  describe(`actions.${creatorName}`, () => {
+    const actual = fn()
 
-    const types = [tReset, tPending, tFulfilled, tRejected]
-    const prefix = new RegExp(`^@@redux-async/${name}`)
+    it('has type prefixed with @@redux-async/NAME', () => {
+      const prefix = new RegExp(`^@@redux-async/${actionName}`)
 
-    types.forEach(el => expect(el).to.match(prefix))
+      expect(actual.type).to.match(prefix)
+    })
+
+    it('has status and name under `meta`', () => {
+      const { meta } = actual
+
+      expect(meta.status).to.be.equal(status)
+      expect(meta.name).to.be.equal(name)
+    })
+  })
+}
+
+testProtocol('reset', reset, { name, status: 'IDLE' })
+testProtocol('execute', execute, { name, status: 'PENDING' })
+testProtocol('resolve', resolve, { name, status: 'FULFILLED' })
+testProtocol('reject', reject, { name, status: 'REJECTED' })
+
+describe('actions.reset', () => {
+  it('has neither error or payload', () => {
+    const actual = reset()
+
+    expect(actual).to.not.have.property('error')
+    expect(actual).to.not.have.property('payload')
+  })
+})
+
+describe('actions.execute', () => {
+  it('has neither error nor payload', () => {
+    const actual = execute()
+
+    expect(actual).to.not.have.property('error')
+    expect(actual).to.not.have.property('payload')
+  })
+})
+
+describe('actions.resolve', () => {
+  it('sends the payload as received', () => {
+    const expected = { data: [1, 2, 3] }
+    const { payload: actual } = resolve(expected)
+
+    expect(actual).to.be.equal(expected)
   })
 
-  it('has status under `meta`', () => {
-    const { meta: mReset } = reset(name)
-    const { meta: mPending } = pending(name)
-    const { meta: mFulfilled } = fulfilled(name, null)
-    const { meta: mRejected } = rejected(name, null)
+  it('has no error flag', () => {
+    const actual = resolve('qwer')
 
-    const pairs = [
-      [mReset, STATUS.IDLE],
-      [mPending, STATUS.PENDING],
-      [mFulfilled, STATUS.FULFILLED],
-      [mRejected, STATUS.REJECTED],
-    ]
+    expect(actual).to.not.have.property('error')
+  })
+})
 
-    pairs.forEach(([meta, status]) => expect(meta.status).to.be.equal(status))
+describe('actions.reject', () => {
+  it('sends an error flag', () => {
+    const { error } = reject('asdf')
+
+    expect(error).to.be.true
+  })
+
+  it('sends the error under payload', () => {
+    const error = Error('Something went wrong')
+    const { payload } = reject(error)
+
+    expect(payload).to.be.equal(error)
   })
 })
